@@ -9,9 +9,7 @@ public class App {
     }
 
     private static void prosesInformasiNim(Scanner sc) {
-        if (!sc.hasNextLine()) {
-            return;
-        }
+        if (!sc.hasNextLine()) return;
 
         String nim = sc.nextLine().trim();
 
@@ -25,19 +23,17 @@ public class App {
 
         if (namaProdi.equals("Kode tidak tersedia")) {
             System.out.println("Kode tidak tersedia");
-        } else {
-            tampilkanInformasiNim(nim, namaProdi);
+            return;
         }
-    }
 
-    private static void tampilkanInformasiNim(String nim, String namaProdi) {
-        int angkatan = Integer.parseInt("20" + nim.substring(3, 5));
-        int urutan = Integer.parseInt(nim.substring(5));
-
-        System.out.printf("Informasi NIM %s: %n", nim);
-        System.out.printf(">> Program Studi: %s%n", namaProdi);
-        System.out.printf(">> Angkatan: %d%n", angkatan);
-        System.out.printf(">> Urutan: %d%n", urutan);
+        // Safe parsing untuk mencegah NumberFormatException
+        try {
+            int angkatan = Integer.parseInt("20" + nim.substring(3, 5));
+            int urutan = Integer.parseInt(nim.substring(5));
+            tampilkanInformasiNim(nim, namaProdi, angkatan, urutan);
+        } catch (NumberFormatException e) {
+            System.out.println("Format NIM tidak valid");
+        }
     }
 
     private static String ambilNamaProgramStudi(String prefix) {
@@ -54,5 +50,12 @@ public class App {
             case "133" -> "Diploma 3 Teknologi Komputer";
             default -> "Kode tidak tersedia";
         };
+    }
+
+    private static void tampilkanInformasiNim(String nim, String namaProdi, int angkatan, int urutan) {
+        System.out.printf("Informasi NIM %s: %n", nim);
+        System.out.printf(">> Program Studi: %s%n", namaProdi);
+        System.out.printf(">> Angkatan: %d%n", angkatan);
+        System.out.printf(">> Urutan: %d%n", urutan);
     }
 }

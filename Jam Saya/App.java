@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class App {
 
-    private static final int MENIT_PER_HARI = 1440; // 24 * 60
+    private static final int MENIT_PER_HARI = 1440;
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -23,16 +23,20 @@ public class App {
             return;
         }
 
-        String[] timeParts = line1.split(":");
-        int startH = Integer.parseInt(timeParts[0]);
-        int startM = Integer.parseInt(timeParts[1]);
+        try {
+            String[] timeParts = line1.split(":");
+            int startH = Integer.parseInt(timeParts[0]);
+            int startM = Integer.parseInt(timeParts[1]);
 
-        if (startH < 0 || startH > 23 || startM < 0 || startM > 59) {
+            if (startH < 0 || startH > 23 || startM < 0 || startM > 59) {
+                System.out.println("Jam tidak valid");
+                return;
+            }
+
+            hitungDanTampilkanHasil(sc, startH, startM);
+        } catch (NumberFormatException e) {
             System.out.println("Jam tidak valid");
-            return;
         }
-
-        hitungDanTampilkanHasil(sc, startH, startM);
     }
 
     private static void hitungDanTampilkanHasil(Scanner sc, int startH, int startM) {
@@ -44,34 +48,34 @@ public class App {
         while (sc.hasNextLine()) {
             String command = sc.nextLine().trim();
 
-            if (command.equals("---")) {
-                break;
-            }
-
-            if (command.isEmpty()) {
-                continue;
-            }
+            if (command.equals("---")) break;
+            if (command.isEmpty()) continue;
 
             if (!command.matches("^[+-]\\d+$")) {
                 System.out.println("Perintah tidak valid");
                 continue;
             }
 
-            int n = Integer.parseInt(command);
-            totalGeser += n;
+            try {
+                int n = Integer.parseInt(command);
+                totalGeser += n;
 
-            if (n > 0) {
-                pergantianHari += (currentMinutes + n) / MENIT_PER_HARI;
-                currentMinutes = (currentMinutes + n) % MENIT_PER_HARI;
-            } else if (n < 0) {
-                int sisa = currentMinutes + n;
-                if (sisa < 0) {
-                    int hariBerkurang = (Math.abs(sisa) + MENIT_PER_HARI - 1) / MENIT_PER_HARI;
-                    pergantianHari += hariBerkurang;
-                    currentMinutes = (sisa % MENIT_PER_HARI + MENIT_PER_HARI) % MENIT_PER_HARI;
-                } else {
-                    currentMinutes = sisa;
+                if (n > 0) {
+                    pergantianHari += (currentMinutes + n) / MENIT_PER_HARI;
+                    currentMinutes = (currentMinutes + n) % MENIT_PER_HARI;
+                } else if (n < 0) {
+                    int sisa = currentMinutes + n;
+                    if (sisa < 0) {
+                        int hariBerkurang = (Math.abs(sisa) + MENIT_PER_HARI - 1) / MENIT_PER_HARI;
+                        // PERBAIKAN: Selalu tambahkan frekuensi pergantian hari (+)
+                        pergantianHari += hariBerkurang;
+                        currentMinutes = (sisa % MENIT_PER_HARI + MENIT_PER_HARI) % MENIT_PER_HARI;
+                    } else {
+                        currentMinutes = sisa;
+                    }
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Perintah tidak valid");
             }
         }
 

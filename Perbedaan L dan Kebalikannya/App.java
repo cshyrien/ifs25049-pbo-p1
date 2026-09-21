@@ -9,16 +9,19 @@ public class App {
     }
 
     private static void prosesAnalisisMatriks(Scanner sc) {
-        if (!sc.hasNextInt()) {
-            return;
-        }
+        if (!sc.hasNextInt()) return;
 
         int n = sc.nextInt();
         long[][] matrix = new long[n][n];
 
+        // Safe reading matrix element
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
-                matrix[i][j] = sc.nextLong();
+                if (sc.hasNextLong()) {
+                    matrix[i][j] = sc.nextLong();
+                } else {
+                    return; // Mencegah InputMismatchException / NumberFormatException
+                }
             }
         }
 
@@ -60,23 +63,15 @@ public class App {
 
     private static long hitungPolaL(long[][] matrix, int n) {
         long sum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += matrix[i][0];
-        }
-        for (int j = 1; j < n - 1; j++) {
-            sum += matrix[n - 1][j];
-        }
+        for (int i = 0; i < n; i++) sum += matrix[i][0];
+        for (int j = 1; j < n - 1; j++) sum += matrix[n - 1][j];
         return sum;
     }
 
     private static long hitungPolaKebalikanL(long[][] matrix, int n) {
         long sum = 0;
-        for (int i = 0; i < n; i++) {
-            sum += matrix[i][n - 1];
-        }
-        for (int j = 1; j < n - 1; j++) {
-            sum += matrix[0][j];
-        }
+        for (int i = 0; i < n; i++) sum += matrix[i][n - 1];
+        for (int j = 1; j < n - 1; j++) sum += matrix[0][j];
         return sum;
     }
 

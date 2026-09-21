@@ -11,7 +11,6 @@ public class App {
         Locale.setDefault(Locale.US);
 
         prosesKalkulasiNilai(sc);
-
         sc.close();
     }
 
@@ -25,7 +24,7 @@ public class App {
                 bobotFinal[i] = Integer.parseInt(sc.nextLine().trim());
                 totalBobot += bobotFinal[i];
             } catch (NumberFormatException e) {
-                // Abaikan kesalahan format
+                // Ignore bad input line
             }
         }
 
@@ -75,9 +74,7 @@ public class App {
 
     private static int cariIndeksSimbol(String simbol) {
         for (int i = 0; i < KODE.length; i++) {
-            if (KODE[i].equals(simbol)) {
-                return i;
-            }
+            if (KODE[i].equals(simbol)) return i;
         }
         return -1;
     }
@@ -92,11 +89,8 @@ public class App {
                 persen = (totalPerolehan[i] * 100) / totalBobotKomponen[i];
             }
 
-            if (persen > 100) {
-                persen = 100;
-            } else if (persen < 0) {
-                persen = 0;
-            }
+            if (persen > 100) persen = 100;
+            else if (persen < 0) persen = 0;
 
             double kontribusi = (persen / 100.0) * bobotFinal[i];
             nilaiAkhir += kontribusi;
@@ -104,11 +98,8 @@ public class App {
             System.out.printf(">> %s: %d/100 (%.2f/%d)%n", NAMA[i], persen, kontribusi, bobotFinal[i]);
         }
 
-        if (nilaiAkhir > 100.0) {
-            nilaiAkhir = 100.0;
-        } else if (nilaiAkhir < 0.0) {
-            nilaiAkhir = 0.0;
-        }
+        if (nilaiAkhir > 100.0) nilaiAkhir = 100.0;
+        else if (nilaiAkhir < 0.0) nilaiAkhir = 0.0;
 
         nilaiAkhir = Math.round(nilaiAkhir * 100.0) / 100.0;
 
@@ -117,13 +108,14 @@ public class App {
         System.out.println(">> Grade: " + tentukanGrade(nilaiAkhir));
     }
 
+    // PERBAIKAN: Bersihkan operator '||' yang membingungkan/redundant
     private static String tentukanGrade(double n) {
-        if (n >= 80.0 || n >= 79.5) return "A";
-        if (n >= 75.0 || n >= 72.0) return "AB";
-        if (n >= 69.0 || n >= 64.5) return "B";
-        if (n >= 60.0 || n >= 57.0) return "BC";
-        if (n >= 55.0 || n >= 49.5) return "C";
-        if (n >= 40.0 || n >= 34.0) return "D";
+        if (n >= 79.5) return "A";
+        if (n >= 72.0) return "AB";
+        if (n >= 64.5) return "B";
+        if (n >= 57.0) return "BC";
+        if (n >= 49.5) return "C";
+        if (n >= 34.0) return "D";
         return "E";
     }
 }

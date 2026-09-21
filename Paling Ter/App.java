@@ -16,16 +16,14 @@ public class App {
     private static void prosesStatistikList(Scanner sc) {
         List<Integer> list = bacaInputList(sc);
 
-        if (list.isEmpty()) {
-            return;
-        }
+        if (list.isEmpty()) return;
 
         int min = Collections.min(list);
         int max = Collections.max(list);
 
         Map<Integer, Integer> freqMap = hitungFrekuensi(list);
-        
         int[] terbanyakTersedikit = cariTerbanyakTersedikit(list, freqMap);
+
         int mostFreqNum = terbanyakTersedikit[0];
         int maxFreq = terbanyakTersedikit[1];
         int leastFreqNum = terbanyakTersedikit[2];
@@ -47,9 +45,7 @@ public class App {
                 list.add(sc.nextInt());
             } else {
                 String token = sc.next();
-                if (token.equals("---")) {
-                    break;
-                }
+                if (token.equals("---")) break;
             }
         }
         return list;
