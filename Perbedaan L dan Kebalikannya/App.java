@@ -34,8 +34,7 @@ public class App {
             long sumRevL = 0;
             long sumCenter = 0;
 
-            // 1. Hitung Pola L: 
-            // Seluruh Kolom 0 (i: 0 -> n-1) + Baris n-1 (j: 1 -> n-2)
+            // 1. Pola L (Kolom 0 + Baris n-1 kecuali [n-1][n-1])
             for (int i = 0; i < n; i++) {
                 sumL += matrix[i][0];
             }
@@ -43,16 +42,15 @@ public class App {
                 sumL += matrix[n - 1][j];
             }
 
-            // 2. Hitung Pola Kebalikan L: 
-            // Baris 0 (j: 1 -> n-1) + Kolom n-1 (i: 1 -> n-1)
-            for (int j = 1; j < n; j++) {
-                sumRevL += matrix[0][j];
-            }
-            for (int i = 1; i < n; i++) {
+            // 2. Pola Kebalikan L (Kolom n-1 + Baris 0 kecuali [0][0])
+            for (int i = 0; i < n; i++) {
                 sumRevL += matrix[i][n - 1];
             }
+            for (int j = 1; j < n - 1; j++) {
+                sumRevL += matrix[0][j];
+            }
 
-            // 3. Hitung Nilai Tengah (Elemen Pusat Matriks)
+            // 3. Nilai Tengah
             if (n % 2 != 0) {
                 sumCenter = matrix[n / 2][n / 2];
             } else {
@@ -63,10 +61,11 @@ public class App {
 
             long diff = Math.abs(sumL - sumRevL);
 
-            // 4. Penentuan Nilai Dominan
+            // 4. Penentuan Nilai Dominan SESUAI SPESIFIKASI SOAL:
+            // Jika L dan Kebalikan L sama, yang dominan adalah Nilai Tengah
             long maxVal;
             if (sumL == sumRevL) {
-                maxVal = sumCenter; // Jika L dan Kebalikan L sama, yang dominan adalah Nilai Tengah
+                maxVal = sumCenter;
             } else {
                 maxVal = Math.max(sumL, Math.max(sumRevL, sumCenter));
             }
