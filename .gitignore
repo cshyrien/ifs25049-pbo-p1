@@ -1,0 +1,13 @@
+# File kompilasi Java (Wajib di-ignore)
+
+*.jar
+
+# Folder hasil build/output IDE (Wajib di-ignore)
+out/
+bin/
+build/
+
+# Folder pengaturan IDE (Opsional tapi disarankan)
+.idea/
+.vscode/
+*.iml
