@@ -1,23 +1,19 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        
-        // Menggunakan array dinamis manual untuk menggantikan ArrayList
-        int capacity = 10;
-        int[] list = new int[capacity];
-        int size = 0;
+        List<Integer> list = new ArrayList<>();
 
+        // Membaca input hingga menemukan "---" atau EOF
         while (sc.hasNext()) {
             if (sc.hasNextInt()) {
-                if (size == capacity) {
-                    capacity *= 2;
-                    int[] temp = new int[capacity];
-                    System.arraycopy(list, 0, temp, 0, size);
-                    list = temp;
-                }
-                list[size++] = sc.nextInt();
+                list.add(sc.nextInt());
             } else {
                 String token = sc.next();
                 if (token.equals("---")) {
@@ -26,55 +22,33 @@ public class App {
             }
         }
 
-        if (size == 0) {
-            System.out.println("Data kosong");
+        // Jika input kosong, tidak menghasilkan output apa pun
+        if (list.isEmpty()) {
             sc.close();
             return;
         }
 
-        // Cari min dan max
-        int min = list[0];
-        int max = list[0];
-        for (int i = 1; i < size; i++) {
-            if (list[i] < min) min = list[i];
-            if (list[i] > max) max = list[i];
+        // Cari nilai minimal dan maksimal
+        int min = Collections.min(list);
+        int max = Collections.max(list);
+
+        // Hitung frekuensi setiap angka menggunakan HashMap
+        Map<Integer, Integer> freqMap = new HashMap<>();
+        for (int num : list) {
+            freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
         }
 
-        // Hitung frekuensi setiap angka unik (menggantikan HashMap)
-        int[] uniqueNums = new int[size];
-        int[] freqs = new int[size];
-        int uniqueCount = 0;
-
-        for (int i = 0; i < size; i++) {
-            int num = list[i];
-            int index = -1;
-            for (int j = 0; j < uniqueCount; j++) {
-                if (uniqueNums[j] == num) {
-                    index = j;
-                    break;
-                }
-            }
-
-            if (index != -1) {
-                freqs[index]++;
-            } else {
-                uniqueNums[uniqueCount] = num;
-                freqs[uniqueCount] = 1;
-                uniqueCount++;
-            }
-        }
-
-        // Cari angka dengan frekuensi terbanyak dan tersedikit
         int maxFreq = -1;
         int minFreq = Integer.MAX_VALUE;
+        int mostFreqNum = list.get(0);
+        int leastFreqNum = list.get(0);
 
-        int mostFreqNum = list[0];
-        int leastFreqNum = list[0];
+        // Cari angka dengan frekuensi terbanyak dan tersedikit
+        for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
+            int num = entry.getKey();
+            int count = entry.getValue();
 
-        for (int i = 0; i < uniqueCount; i++) {
-            int num = uniqueNums[i];
-            int count = freqs[i];
-
+            // Paling banyak / terbanyak
             if (count > maxFreq) {
                 maxFreq = count;
                 mostFreqNum = num;
@@ -82,6 +56,7 @@ public class App {
                 mostFreqNum = Math.max(mostFreqNum, num);
             }
 
+            // Paling sedikit / tersedikit
             if (count < minFreq) {
                 minFreq = count;
                 leastFreqNum = num;
@@ -90,18 +65,13 @@ public class App {
             }
         }
 
-        // Cari jumlah kemunculan min dan max
-        int countMax = 0;
-        int countMin = 0;
-        for (int i = 0; i < uniqueCount; i++) {
-            if (uniqueNums[i] == max) countMax = freqs[i];
-            if (uniqueNums[i] == min) countMin = freqs[i];
-        }
+        int countMax = freqMap.get(max);
+        int countMin = freqMap.get(min);
 
         long sumTertinggi = (long) max * countMax;
         long sumTerendah = (long) min * countMin;
 
-        // Output Resmi sesuai Test Case
+        // Output Resmi sesuai format
         System.out.println("Tertinggi: " + max);
         System.out.println("Terendah: " + min);
         System.out.println("Terbanyak: " + mostFreqNum + " (" + maxFreq + "x)");
