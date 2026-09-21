@@ -1,5 +1,5 @@
 # File kompilasi Java (Wajib di-ignore)
-
+*.class
 *.jar
 
 # Folder hasil build/output IDE (Wajib di-ignore)

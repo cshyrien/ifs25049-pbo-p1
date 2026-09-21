@@ -1,10 +1,15 @@
 import java.util.Scanner;
 
 public class App {
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        prosesAnalisisMatriks(sc);
+        sc.close();
+    }
+
+    private static void prosesAnalisisMatriks(Scanner sc) {
         if (!sc.hasNextInt()) {
-            sc.close();
             return;
         }
 
@@ -18,65 +23,70 @@ public class App {
         }
 
         if (n < 3) {
-            long totalSum = 0;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    totalSum += matrix[i][j];
-                }
-            }
-            System.out.println("Nilai L: Tidak Ada");
-            System.out.println("Nilai Kebalikan L: Tidak Ada");
-            System.out.println("Nilai Tengah: " + totalSum);
-            System.out.println("Perbedaan: Tidak Ada");
-            System.out.println("Dominan: " + totalSum);
+            prosesMatriksKecil(matrix, n);
         } else {
-            long sumL = 0;
-            long sumRevL = 0;
-            long sumCenter = 0;
-
-            // 1. Pola L (Kolom 0 + Baris n-1 kecuali [n-1][n-1])
-            for (int i = 0; i < n; i++) {
-                sumL += matrix[i][0];
-            }
-            for (int j = 1; j < n - 1; j++) {
-                sumL += matrix[n - 1][j];
-            }
-
-            // 2. Pola Kebalikan L (Kolom n-1 + Baris 0 kecuali [0][0])
-            for (int i = 0; i < n; i++) {
-                sumRevL += matrix[i][n - 1];
-            }
-            for (int j = 1; j < n - 1; j++) {
-                sumRevL += matrix[0][j];
-            }
-
-            // 3. Nilai Tengah
-            if (n % 2 != 0) {
-                sumCenter = matrix[n / 2][n / 2];
-            } else {
-                int mid = n / 2;
-                sumCenter = matrix[mid - 1][mid - 1] + matrix[mid - 1][mid]
-                          + matrix[mid][mid - 1]     + matrix[mid][mid];
-            }
-
-            long diff = Math.abs(sumL - sumRevL);
-
-            // 4. Penentuan Nilai Dominan SESUAI SPESIFIKASI SOAL:
-            // Jika L dan Kebalikan L sama, yang dominan adalah Nilai Tengah
-            long maxVal;
-            if (sumL == sumRevL) {
-                maxVal = sumCenter;
-            } else {
-                maxVal = Math.max(sumL, Math.max(sumRevL, sumCenter));
-            }
-
-            System.out.println("Nilai L: " + sumL);
-            System.out.println("Nilai Kebalikan L: " + sumRevL);
-            System.out.println("Nilai Tengah: " + sumCenter);
-            System.out.println("Perbedaan: " + diff);
-            System.out.println("Dominan: " + maxVal);
+            prosesMatriksStandar(matrix, n);
         }
+    }
 
-        sc.close();
+    private static void prosesMatriksKecil(long[][] matrix, int n) {
+        long totalSum = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                totalSum += matrix[i][j];
+            }
+        }
+        System.out.println("Nilai L: Tidak Ada");
+        System.out.println("Nilai Kebalikan L: Tidak Ada");
+        System.out.println("Nilai Tengah: " + totalSum);
+        System.out.println("Perbedaan: Tidak Ada");
+        System.out.println("Dominan: " + totalSum);
+    }
+
+    private static void prosesMatriksStandar(long[][] matrix, int n) {
+        long sumL = hitungPolaL(matrix, n);
+        long sumRevL = hitungPolaKebalikanL(matrix, n);
+        long sumCenter = hitungNilaiTengah(matrix, n);
+        long diff = Math.abs(sumL - sumRevL);
+
+        long maxVal = (sumL == sumRevL) ? sumCenter : Math.max(sumL, Math.max(sumRevL, sumCenter));
+
+        System.out.println("Nilai L: " + sumL);
+        System.out.println("Nilai Kebalikan L: " + sumRevL);
+        System.out.println("Nilai Tengah: " + sumCenter);
+        System.out.println("Perbedaan: " + diff);
+        System.out.println("Dominan: " + maxVal);
+    }
+
+    private static long hitungPolaL(long[][] matrix, int n) {
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += matrix[i][0];
+        }
+        for (int j = 1; j < n - 1; j++) {
+            sum += matrix[n - 1][j];
+        }
+        return sum;
+    }
+
+    private static long hitungPolaKebalikanL(long[][] matrix, int n) {
+        long sum = 0;
+        for (int i = 0; i < n; i++) {
+            sum += matrix[i][n - 1];
+        }
+        for (int j = 1; j < n - 1; j++) {
+            sum += matrix[0][j];
+        }
+        return sum;
+    }
+
+    private static long hitungNilaiTengah(long[][] matrix, int n) {
+        if (n % 2 != 0) {
+            return matrix[n / 2][n / 2];
+        } else {
+            int mid = n / 2;
+            return matrix[mid - 1][mid - 1] + matrix[mid - 1][mid]
+                 + matrix[mid][mid - 1]     + matrix[mid][mid];
+        }
     }
 }

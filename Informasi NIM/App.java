@@ -1,19 +1,22 @@
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
 
-        if (!input.hasNextLine()) {
-            input.close();
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        prosesInformasiNim(sc);
+        sc.close();
+    }
+
+    private static void prosesInformasiNim(Scanner sc) {
+        if (!sc.hasNextLine()) {
             return;
         }
 
-        String nim = input.nextLine().trim();
+        String nim = sc.nextLine().trim();
 
         if (nim.length() != 8) {
             System.out.println("NIM harus 8 karakter");
-            input.close();
             return;
         }
 
@@ -25,21 +28,19 @@ public class App {
         } else {
             tampilkanInformasiNim(nim, namaProdi);
         }
-
-        input.close();
     }
 
-    public static void tampilkanInformasiNim(String nim, String namaProdi) {
+    private static void tampilkanInformasiNim(String nim, String namaProdi) {
         int angkatan = Integer.parseInt("20" + nim.substring(3, 5));
         int urutan = Integer.parseInt(nim.substring(5));
 
-        System.out.printf("Informasi NIM %s: \n", nim);
-        System.out.printf(">> Program Studi: %s\n", namaProdi);
-        System.out.printf(">> Angkatan: %d\n", angkatan);
-        System.out.printf(">> Urutan: %d\n", urutan);
+        System.out.printf("Informasi NIM %s: %n", nim);
+        System.out.printf(">> Program Studi: %s%n", namaProdi);
+        System.out.printf(">> Angkatan: %d%n", angkatan);
+        System.out.printf(">> Urutan: %d%n", urutan);
     }
 
-    public static String ambilNamaProgramStudi(String prefix) {
+    private static String ambilNamaProgramStudi(String prefix) {
         return switch (prefix) {
             case "11S" -> "Sarjana Informatika";
             case "12S" -> "Sarjana Sistem Informasi";

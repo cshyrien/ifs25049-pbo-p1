@@ -6,11 +6,42 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class App {
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        List<Integer> list = new ArrayList<>();
+        prosesStatistikList(sc);
+        sc.close();
+    }
 
-        // Membaca input hingga menemukan "---" atau EOF
+    private static void prosesStatistikList(Scanner sc) {
+        List<Integer> list = bacaInputList(sc);
+
+        if (list.isEmpty()) {
+            return;
+        }
+
+        int min = Collections.min(list);
+        int max = Collections.max(list);
+
+        Map<Integer, Integer> freqMap = hitungFrekuensi(list);
+        
+        int[] terbanyakTersedikit = cariTerbanyakTersedikit(list, freqMap);
+        int mostFreqNum = terbanyakTersedikit[0];
+        int maxFreq = terbanyakTersedikit[1];
+        int leastFreqNum = terbanyakTersedikit[2];
+        int minFreq = terbanyakTersedikit[3];
+
+        int countMax = freqMap.get(max);
+        int countMin = freqMap.get(min);
+
+        long sumTertinggi = (long) max * countMax;
+        long sumTerendah = (long) min * countMin;
+
+        tampilkanHasilStatistik(max, min, mostFreqNum, maxFreq, leastFreqNum, minFreq, countMax, countMin, sumTertinggi, sumTerendah);
+    }
+
+    private static List<Integer> bacaInputList(Scanner sc) {
+        List<Integer> list = new ArrayList<>();
         while (sc.hasNext()) {
             if (sc.hasNextInt()) {
                 list.add(sc.nextInt());
@@ -21,34 +52,27 @@ public class App {
                 }
             }
         }
+        return list;
+    }
 
-        // Jika input kosong, tidak menghasilkan output apa pun
-        if (list.isEmpty()) {
-            sc.close();
-            return;
-        }
-
-        // Cari nilai minimal dan maksimal
-        int min = Collections.min(list);
-        int max = Collections.max(list);
-
-        // Hitung frekuensi setiap angka menggunakan HashMap
+    private static Map<Integer, Integer> hitungFrekuensi(List<Integer> list) {
         Map<Integer, Integer> freqMap = new HashMap<>();
         for (int num : list) {
             freqMap.put(num, freqMap.getOrDefault(num, 0) + 1);
         }
+        return freqMap;
+    }
 
+    private static int[] cariTerbanyakTersedikit(List<Integer> list, Map<Integer, Integer> freqMap) {
         int maxFreq = -1;
         int minFreq = Integer.MAX_VALUE;
         int mostFreqNum = list.get(0);
         int leastFreqNum = list.get(0);
 
-        // Cari angka dengan frekuensi terbanyak dan tersedikit
         for (Map.Entry<Integer, Integer> entry : freqMap.entrySet()) {
             int num = entry.getKey();
             int count = entry.getValue();
 
-            // Paling banyak / terbanyak
             if (count > maxFreq) {
                 maxFreq = count;
                 mostFreqNum = num;
@@ -56,7 +80,6 @@ public class App {
                 mostFreqNum = Math.max(mostFreqNum, num);
             }
 
-            // Paling sedikit / tersedikit
             if (count < minFreq) {
                 minFreq = count;
                 leastFreqNum = num;
@@ -65,20 +88,15 @@ public class App {
             }
         }
 
-        int countMax = freqMap.get(max);
-        int countMin = freqMap.get(min);
+        return new int[]{mostFreqNum, maxFreq, leastFreqNum, minFreq};
+    }
 
-        long sumTertinggi = (long) max * countMax;
-        long sumTerendah = (long) min * countMin;
-
-        // Output Resmi sesuai format
+    private static void tampilkanHasilStatistik(int max, int min, int mostFreq, int maxFreq, int leastFreq, int minFreq, int countMax, int countMin, long sumMax, long sumMin) {
         System.out.println("Tertinggi: " + max);
         System.out.println("Terendah: " + min);
-        System.out.println("Terbanyak: " + mostFreqNum + " (" + maxFreq + "x)");
-        System.out.println("Tersedikit: " + leastFreqNum + " (" + minFreq + "x)");
-        System.out.println("Jumlah Tertinggi: " + max + " * " + countMax + " = " + sumTertinggi);
-        System.out.println("Jumlah Terendah: " + min + " * " + countMin + " = " + sumTerendah);
-
-        sc.close();
+        System.out.println("Terbanyak: " + mostFreq + " (" + maxFreq + "x)");
+        System.out.println("Tersedikit: " + leastFreq + " (" + minFreq + "x)");
+        System.out.println("Jumlah Tertinggi: " + max + " * " + countMax + " = " + sumMax);
+        System.out.println("Jumlah Terendah: " + min + " * " + countMin + " = " + sumMin);
     }
 }
